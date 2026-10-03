@@ -1,0 +1,29 @@
+name: Chrome Web Store Check
+
+# Read-only check of the Chrome Web Store credentials (OAuth2 token, publisher ID,
+# API v2 access) without releasing. workflow_dispatch only works once this file is
+# on the default branch, so pushes that change the client also run it
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/scripts/chrome-webstore.sh'
+      - '.github/workflows/chrome-webstore-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check Chrome Web Store API access
+        run: bash .github/scripts/chrome-webstore.sh check
+        env:
+          CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          PUBLISHER_ID: ${{ secrets.CHROME_PUBLISHER_ID }}
+          EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}

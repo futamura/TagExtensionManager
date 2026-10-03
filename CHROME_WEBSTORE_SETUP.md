@@ -4,6 +4,8 @@
 
 This guide explains how to set up Chrome Web Store API access for automated extension publishing.
 
+The release workflow (`.github/workflows/release.yml`) calls the [Chrome Web Store API v2](https://developer.chrome.com/docs/webstore/api/reference/rest) through `.github/scripts/chrome-webstore.sh`. On a `v*.*.*` tag it uploads the package and submits it for review; the new version goes live as soon as the review passes.
+
 ## Prerequisites
 
 - Google Cloud Console access
@@ -22,56 +24,28 @@ This guide explains how to set up Chrome Web Store API access for automated exte
 
 1. Navigate to **APIs & Services > Credentials**
 2. Click **Create Credentials** > **OAuth 2.0 Client IDs**
-3. Configure the OAuth consent screen if prompted
-4. Choose **Web application** as the application type
-5. Add authorized redirect URIs:
-   - `http://localhost:8080`
-   - `https://oauth2.googleapis.com/token`
-6. Click **Create**
-7. Note down the **Client ID** and **Client Secret**
+3. Configure the OAuth consent screen if prompted, and set its publishing status to **In production** (refresh tokens issued while it is in **Testing** expire after 7 days)
+4. Choose **Desktop app** as the application type
+5. Click **Create**
+6. Note down the **Client ID** and **Client Secret**
+
+The client and refresh token belong to the Google account, not to a single extension, so the same credentials work for every extension of the same publisher.
 
 ## Step 3: Generate Refresh Token
 
-### Option A: Using Google OAuth2 Playground (Recommended)
-
-1. Go to [Google OAuth2 Playground](https://developers.google.com/oauthplayground/)
-2. Click the settings icon (⚙️) in the top right
-3. Check "Use your own OAuth credentials"
-4. Enter your **Client ID** and **Client Secret**
-5. Close settings
-6. In the left panel, find and select:
-   - **Chrome Web Store API v1**
-   - **https://www.googleapis.com/auth/chromewebstore**
-7. Click **Authorize APIs**
-8. Sign in with your Google account
-9. Click **Exchange authorization code for tokens**
-10. Copy the **Refresh token**
-
-### Option B: Using curl (Advanced)
-
 ```bash
-# Step 1: Get authorization code
-AUTH_URL="https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:8080&scope=https://www.googleapis.com/auth/chromewebstore&response_type=code&access_type=offline"
-
-echo "Open this URL in your browser:"
-echo "$AUTH_URL"
-
-# Step 2: Exchange code for tokens
-curl -X POST \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "client_id=YOUR_CLIENT_ID" \
-  -d "client_secret=YOUR_CLIENT_SECRET" \
-  -d "code=AUTHORIZATION_CODE" \
-  -d "grant_type=authorization_code" \
-  -d "redirect_uri=http://localhost:8080" \
-  "https://oauth2.googleapis.com/token"
+npx chrome-webstore-upload-keys
 ```
 
-## Step 4: Get Extension ID
+Enter the **Client ID** and **Client Secret**, sign in with the account that manages the extension, and copy the printed **Refresh token**. The token is issued with the `https://www.googleapis.com/auth/chromewebstore` scope.
+
+Google OAuth2 Playground fails with `redirect_uri_mismatch` for Desktop app clients.
+
+## Step 4: Get Publisher ID and Extension ID
 
 1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/)
-2. Find your extension
-3. Copy the **Extension ID** from the URL or extension details
+2. Copy the **Publisher ID** from **Publisher > Settings**
+3. Find your extension and copy the **Extension ID** (32 letters a-p) from the URL or extension details
 
 ## Step 5: Configure GitHub Secrets
 
@@ -82,35 +56,40 @@ Add the following secrets to your GitHub repository:
    - `CHROME_CLIENT_ID`: Your OAuth2 Client ID
    - `CHROME_CLIENT_SECRET`: Your OAuth2 Client Secret
    - `CHROME_REFRESH_TOKEN`: Your Refresh Token
+   - `CHROME_PUBLISHER_ID`: Your Publisher ID
+   - `CHROME_EXTENSION_ID`: Your Extension ID
 
-## Step 6: Update Workflow Configuration
+## Step 6: Verify the Setup
 
-Ensure your workflow uses the correct Extension ID:
-
-```yaml
-env:
-  EXTENSION_ID: your-extension-id-here
-```
+Run the **Chrome Web Store Check** workflow (**Actions > Chrome Web Store Check > Run workflow**). It obtains an access token and reads the item status without uploading anything. Pushes that change `.github/scripts/chrome-webstore.sh` or the check workflow also run it.
 
 ## Troubleshooting
 
-### 403 Forbidden Error
+The upload step prints which request failed (OAuth2 token, fetchStatus, upload or publish) and the likely cause.
 
-- Verify all OAuth2 credentials are correct
-- Ensure Chrome Web Store API is enabled
-- Check that Extension ID matches your published extension
-- Verify your Chrome Web Store Developer Account is active
+### invalid_grant
 
-### Invalid Credentials
+- The refresh token expired or was revoked (unused for 6 months, or 7 days while the OAuth consent screen is in **Testing**)
+- Generate a new one (Step 3) and update `CHROME_REFRESH_TOKEN`
 
-- Refresh tokens can expire - generate a new one
-- Ensure OAuth2 client has the correct scopes
-- Verify redirect URIs are properly configured
+### invalid_client
 
-### API Not Enabled
+- `CHROME_CLIENT_ID` / `CHROME_CLIENT_SECRET` do not match a **Desktop app** OAuth client
 
-- Go to Google Cloud Console > APIs & Services > Library
-- Search for "Chrome Web Store API" and enable it
+### 403 Forbidden
+
+- Ensure Chrome Web Store API is enabled in the Google Cloud project of the OAuth client
+- Ensure the refresh token was issued with the `https://www.googleapis.com/auth/chromewebstore` scope
+- Ensure the account that issued the token can manage this publisher
+
+### 404 Not Found
+
+- Check `CHROME_PUBLISHER_ID` (Publisher > Settings) and `CHROME_EXTENSION_ID` in the Developer Dashboard
+
+### Upload Rejected
+
+- The version must be higher than the published and submitted versions
+- A submission still in review must be cancelled in the Developer Dashboard first
 
 ## Security Notes
 
@@ -122,5 +101,6 @@ env:
 ## References
 
 - [Chrome Web Store API Documentation](https://developer.chrome.com/docs/webstore/api/)
+- [Chrome Web Store API v2 Reference](https://developer.chrome.com/docs/webstore/api/reference/rest)
 - [Google OAuth2 Documentation](https://developers.google.com/identity/protocols/oauth2)
 - [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/)
