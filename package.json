@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@tailwindcss/postcss": "4.3.3",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/chrome": "^0.0.329",
     "@types/html-webpack-plugin": "^3.2.9",
@@ -50,7 +51,6 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
-    "autoprefixer": "^10.5.4",
     "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.4",
     "eslint": "^9.39.5",
@@ -63,19 +63,12 @@
     "postcss-loader": "^8.2.1",
     "prettier": "^3.9.6",
     "style-loader": "^4.0.0",
-    "tailwindcss": "3.4.1",
+    "tailwindcss": "4.3.3",
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "webpack": "^5.109.2",
     "webpack-cli": "^6.0.1"
   },
-  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac",
-  "pnpm": {
-    "auditConfig": {
-      "ignoreGhsas": [
-        "GHSA-vfj7-8cjw-p6xm"
-      ]
-    }
-  }
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }

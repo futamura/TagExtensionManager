@@ -25,7 +25,7 @@ export const SearchBarComponent: React.FC<SearchBarComponentProps> = ({ inputRef
             placeholder={placeholder}
             onChange={onInputChange}
             onKeyDown={onInputKeyDown}
-            className="w-full h-10 pl-10 pr-3 py-1.5 rounded-full bg-white dark:bg-zinc-700 focus:outline-none focus:ring-1 focus:ring-zinc-200 dark:focus:ring-zinc-500"
+            className="w-full h-10 pl-10 pr-3 py-1.5 rounded-full bg-white dark:bg-zinc-700 focus:outline-hidden focus:ring-1 focus:ring-zinc-200 dark:focus:ring-zinc-500"
           />
         </div>
         {buttons}

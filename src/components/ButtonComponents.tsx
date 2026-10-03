@@ -12,7 +12,7 @@ export const DefaultBackgroundButton: React.FC<DefaultBackgroundButtonProps> = (
     <button
       onClick={onClick}
       title={title}
-      className={`bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 focus:outline-none transition-colors ${className}`}
+      className={`bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 focus:outline-hidden transition-colors ${className}`}
     >
       {children}
     </button>
@@ -26,7 +26,9 @@ interface DefaultBackgroundDivProps {
 
 export const DefaultBackgroundDiv: React.FC<DefaultBackgroundDivProps> = ({ className, children }) => {
   return (
-    <div className={`bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 focus:outline-none transition-colors ${className}`}>{children}</div>
+    <div className={`bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 focus:outline-hidden transition-colors ${className}`}>
+      {children}
+    </div>
   );
 };
 
@@ -42,7 +44,7 @@ export const XLargeButtonComponent: React.FC<XLargeButtonComponentProps> = ({
   children,
 }) => {
   return (
-    <button onClick={onClick} className={`h-10 px-3 py-2 text-lg font-medium rounded-full text-zinc-100 focus:outline-none transition-colors ${className}`}>
+    <button onClick={onClick} className={`h-10 px-3 py-2 text-lg font-medium rounded-full text-zinc-100 focus:outline-hidden transition-colors ${className}`}>
       {children}
     </button>
   );

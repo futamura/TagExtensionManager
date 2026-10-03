@@ -93,7 +93,7 @@ export const ExtensionCardMenu: React.FC<ExtensionCardMenuProps> = ({ extension,
           <>
             <MenuButton
               ref={buttonRef}
-              className="p-1 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-lg focus:outline-none transition-colors"
+              className="p-1 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-lg focus:outline-hidden transition-colors"
             >
               <EllipsisVerticalIcon className="w-5 h-5" />
             </MenuButton>
@@ -107,7 +107,7 @@ export const ExtensionCardMenu: React.FC<ExtensionCardMenuProps> = ({ extension,
                 leaveFrom="transform scale-100 opacity-100"
                 leaveTo="transform scale-95 opacity-0"
               >
-                <MenuItems className="bg-zinc-50 dark:bg-zinc-700 rounded-lg shadow-xl shadow-zinc-300 dark:shadow-zinc-900 focus:outline-none ring-1 ring-black ring-opacity-5">
+                <MenuItems className="bg-zinc-50 dark:bg-zinc-700 rounded-lg shadow-xl shadow-zinc-300 dark:shadow-zinc-900 focus:outline-hidden ring-1 ring-black/5">
                   <div className="py-1">
                     <MenuItemComponent onClick={() => openTagSelector(extension)}>
                       <TagIcon className="w-4 h-4" />

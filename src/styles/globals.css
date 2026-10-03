@@ -1,8 +1,43 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer components {
+/** Reference: https://tailwindcss.com/docs/responsive-design */
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-xs: 32rem;
+  --breakpoint-sm: 38rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  /** Font sizes without line-height, matching the Tailwind v3 configuration */
+  --text-*: initial;
+  --text-xs: 0.5rem; /** 8px */
+  --text-sm: 0.625rem; /** 10px */
+  --text-base: 0.75rem; /** 12px */
+  --text-lg: 0.875rem; /** 14px */
+  --text-xl: 1rem; /** 16px */
+  --text-2xl: 1.125rem; /** 18px */
+  --text-3xl: 1.5rem; /** 24px */
+  --text-4xl: 2rem; /** 32px */
+  --text-5xl: 2.5rem; /** 40px */
+  --text-6xl: 3rem; /** 48px */
+  --text-7xl: 3.5rem; /** 56px */
+  --text-8xl: 4rem; /** 64px */
+  --text-9xl: 4.5rem; /** 72px */
+}
+
+/** Restore Tailwind v3 preflight defaults that changed in v4 */
+@layer base {
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af;
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 :root {

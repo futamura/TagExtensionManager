@@ -37,7 +37,6 @@ Please follow the directory structure below for implementation:
 ├── tsconfig.json                 # TypeScript settings
 ├── webpack.config.ts             # Webpack configuration
 ├── postcss.config.js             # PostCSS configuration
-├── tailwind.config.js            # Tailwind CSS configuration
 ├── mise.toml                     # Development environment settings
 ├── TECHNOLOGSTACK.md             # Technology stack documentation
 ├── DIRECTORYSTRUCTURE.md         # Directory structure documentation
@@ -71,7 +70,6 @@ Please follow the directory structure below for implementation:
 - `tsconfig.json`: TypeScript compiler configuration
 - `webpack.config.ts`: Webpack build configuration
 - `postcss.config.js`: PostCSS configuration
-- `tailwind.config.js`: Tailwind CSS configuration
 
 #### Build and Dependencies
 - `dist/`: Compiled output files

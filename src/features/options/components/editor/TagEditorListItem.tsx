@@ -147,7 +147,7 @@ export const TagEditorListItem: React.FC<TagEditorListItemProps> = React.memo(({
                   }
                 }}
                 size={Math.max(editingTagName.length, 1)}
-                className="rounded-sm pl-1 bg-zinc-100 dark:bg-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-500 focus:outline-none transition-colors"
+                className="rounded-xs pl-1 bg-zinc-100 dark:bg-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-500 focus:outline-hidden transition-colors"
               />
             ) : (
               <button onClick={() => startEditing(tag.id, tag.name)} className="select-none">

@@ -23,7 +23,7 @@ export const DialogRoot: React.FC<DialogRootProps> = ({ isOpen, onClose, width =
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xs" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">

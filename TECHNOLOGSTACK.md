@@ -30,9 +30,9 @@
 
 ### Styling
 
-- Tailwind CSS: 3.4.1
+- Tailwind CSS: 4.3.3
+- @tailwindcss/postcss: 4.3.3
 - PostCSS: ^8.5.23
-- Autoprefixer: ^10.5.4
 
 ### Type Definitions
 

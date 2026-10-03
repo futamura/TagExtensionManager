@@ -107,7 +107,7 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex items-center gap-2">
-        <img src={extension.iconUrl} alt={extension.name} className={`w-6 h-6 rounded transition-opacity ${!extension.enabled ? 'opacity-30' : ''}`} />
+        <img src={extension.iconUrl} alt={extension.name} className={`w-6 h-6 rounded-sm transition-opacity ${!extension.enabled ? 'opacity-30' : ''}`} />
         <div className="flex-1 min-w-0">
           <h3 className={`text-sm select-none font-medium truncate transition-opacity ${!extension.enabled ? 'opacity-30' : ''}`}>{extension.name}</h3>
           <p className={`text-xs text-zinc-500 dark:text-zinc-400 select-none transition-opacity ${!extension.enabled ? 'opacity-50' : ''}`}>
@@ -125,7 +125,7 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
             checked={extension.enabled}
             onChange={async checked => toggleEnabled(extension.id, checked)}
             disabled={extension.locked}
-            className={`${extension.enabled ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-600'} relative inline-flex h-4 w-7 items-center rounded-full focus:outline-none transition-opacity ${
+            className={`${extension.enabled ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-600'} relative inline-flex h-4 w-7 items-center rounded-full focus:outline-hidden transition-opacity ${
               extension.locked ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
