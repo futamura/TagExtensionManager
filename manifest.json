@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tag Extension Manager",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A free and open-source Chrome extension to manage other extensions",
   "permissions": ["management", "storage", "activeTab", "offscreen", "sidePanel"],
   "action": {
