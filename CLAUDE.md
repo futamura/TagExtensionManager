@@ -24,7 +24,7 @@ Fastlane (`bundle exec fastlane <lane>`) がリリース作業をラップする
 リリース時の注意点:
 
 - `release` lane は対話式 (バージョン種別の選択、確認プロンプト複数) のため、非対話環境では実行できない。
-- CI の Chrome Web Store アップロード step は `continue-on-error: true`。workflow が成功しても CWS へ反映されていない可能性があるため、リリース後は CWS Developer Console で要確認。
+- CI の Chrome Web Store アップロード step (`.github/scripts/chrome-webstore.sh publish`、API v2) は `continue-on-error: true` だが、失敗すると後続の結果確認 step が `exit 1` して workflow が失敗する。成功時は審査に提出された状態 (`PENDING_REVIEW`) で、審査を通過すると自動で公開される。公開されたかは、ストアページの Version か Chrome Web Store Check workflow の `Published` 行で確認する。
 
 `package.json` と `manifest.json` のバージョンは常に同期させること (fastlane `bump_version` が両方を更新する)。
 
