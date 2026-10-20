@@ -93,6 +93,8 @@ Run type check
 
 Bump version number
 
+Options: bump (never|patch|minor|major) skips the version prompt
+
 ### create_package
 
 ```sh
@@ -109,6 +111,8 @@ Create extension package
 
 Merge develop branch to main
 
+Options: yes:true skips the confirmation
+
 ### release
 
 ```sh
@@ -116,6 +120,8 @@ Merge develop branch to main
 ```
 
 Create release
+
+Options: bump (never|patch|minor|major) skips the version prompt, yes:true skips all confirmations
 
 ----
 
