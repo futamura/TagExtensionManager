@@ -4,6 +4,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 import { SearchBarComponent } from '@/components';
 import { useExtensionContext } from '@/contexts';
+import { focusSearchInput, getCards, isDialogOpen, SEARCH_INPUT_ID } from '@/utils';
 
 /**
  * The ExtensionSearchBar component.
@@ -69,6 +70,37 @@ const ExtensionSearchBar: React.FC = () => {
   }, []);
 
   /**
+   * Focus the search input when "/" is pressed outside of text fields and dialogs.
+   */
+  useEffect(() => {
+    const handleSlash = (e: KeyboardEvent) => {
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || e.isComposing || isDialogOpen()) return;
+
+      const target = e.target as HTMLElement | null;
+      if (target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))) return;
+
+      e.preventDefault();
+      focusSearchInput();
+    };
+
+    document.addEventListener('keydown', handleSlash);
+    return () => document.removeEventListener('keydown', handleSlash);
+  }, []);
+
+  /**
+   * Move focus from the search input to the first card with the down arrow.
+   */
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'ArrowDown' || e.nativeEvent.isComposing) return;
+
+    const firstCard = getCards()[0];
+    if (!firstCard) return;
+
+    e.preventDefault();
+    firstCard.focus();
+  };
+
+  /**
    * The ExtensionSearchBar component.
    *
    * @returns The ExtensionSearchBar component.
@@ -76,10 +108,11 @@ const ExtensionSearchBar: React.FC = () => {
   return (
     <SearchBarComponent
       inputRef={searchInputRef}
-      id="search-input"
+      id={SEARCH_INPUT_ID}
       value={searchQuery}
       placeholder="Search extensions..."
       onInputChange={handleSearch}
+      onInputKeyDown={handleInputKeyDown}
       icon={<MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />}
     />
   );
