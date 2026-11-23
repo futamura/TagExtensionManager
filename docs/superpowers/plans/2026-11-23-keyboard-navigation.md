@@ -16,7 +16,7 @@
 - Code comments in English, block style (`/** */`) even for one line.
 - Do not change dependencies or tool versions.
 - Mouse-only appearance must not change: focus styling uses `focus-visible` only.
-- Focus ring: `ring-2`, `zinc-400` in light mode, `zinc-500` in dark mode.
+- Focus ring: `ring-1`, `zinc-200` in light mode, `zinc-500` in dark mode (matches the search field).
 - Do not call `chrome.*` directly; use existing context functions (`toggleEnabled`, `openOptionsPage`).
 - Commit messages in English, no `Co-Authored-By`, reference `FUT-508`.
 
@@ -44,7 +44,7 @@ Each line is verified manually in Task 4.
 
 **Interfaces:**
 
-- Produces: `export const FOCUS_RING_CLASS = 'focus-visible:ring-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-500';` from `@/constants`.
+- Produces: `export const FOCUS_RING_CLASS = 'focus-visible:ring-1 focus-visible:ring-zinc-200 dark:focus-visible:ring-zinc-500';` from `@/constants`.
 
 - [ ] **Step 1: Add `FOCUS_RING_CLASS` in `src/constants/styles.ts` and re-export it from `src/constants/index.ts`.**
 - [ ] **Step 2: Append `FOCUS_RING_CLASS` to the class lists of `DefaultBackgroundButton`, `XLargeButtonComponent` and the `DialogHeader` close button.** Keep the existing `focus:outline-hidden`.

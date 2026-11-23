@@ -14,7 +14,7 @@ import { focusSearchInput, getCards } from '@/utils';
  * Focus ring shown on the card while a control inside it (e.g. the menu button
  * after the menu closes) has keyboard focus.
  */
-const CARD_INNER_FOCUS_RING_CLASS = 'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-zinc-400 dark:has-[:focus-visible]:ring-zinc-500';
+const CARD_INNER_FOCUS_RING_CLASS = 'has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-zinc-200 dark:has-[:focus-visible]:ring-zinc-500';
 
 /**
  * Button kept out of the Tab order. Headless UI Switch overrides a tabIndex

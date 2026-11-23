@@ -52,7 +52,7 @@ Each card is a single Tab stop. The switch and the menu button inside a card are
 Show a ring only for keyboard focus (`focus-visible`); mouse clicks look the same as today.
 
 - Targets: extension cards and the shared buttons that currently hide focus with `focus:outline-hidden` (tags, header, menu items, etc.).
-- Style: `ring-2`, `zinc-400` in light mode and `zinc-500` in dark mode.
+- Style: `ring-1`, `zinc-200` in light mode and `zinc-500` in dark mode, matching the existing search field focus ring (changed from `ring-2` / `zinc-400` after review on 2026-11-23).
 
 ## Left to the builder
 
