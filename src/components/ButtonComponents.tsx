@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { FOCUS_RING_CLASS } from '@/constants';
+
 interface DefaultBackgroundButtonProps {
   className?: string;
   title?: string;
@@ -12,7 +14,7 @@ export const DefaultBackgroundButton: React.FC<DefaultBackgroundButtonProps> = (
     <button
       onClick={onClick}
       title={title}
-      className={`bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 focus:outline-hidden transition-colors ${className}`}
+      className={`bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 focus:outline-hidden ${FOCUS_RING_CLASS} transition-colors ${className}`}
     >
       {children}
     </button>
@@ -44,7 +46,10 @@ export const XLargeButtonComponent: React.FC<XLargeButtonComponentProps> = ({
   children,
 }) => {
   return (
-    <button onClick={onClick} className={`h-10 px-3 py-2 text-lg font-medium rounded-full text-zinc-100 focus:outline-hidden transition-colors ${className}`}>
+    <button
+      onClick={onClick}
+      className={`h-10 px-3 py-2 text-lg font-medium rounded-full text-zinc-100 focus:outline-hidden ${FOCUS_RING_CLASS} transition-colors ${className}`}
+    >
       {children}
     </button>
   );
