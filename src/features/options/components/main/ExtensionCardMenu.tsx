@@ -93,6 +93,7 @@ export const ExtensionCardMenu: React.FC<ExtensionCardMenuProps> = ({ extension,
           <>
             <MenuButton
               ref={buttonRef}
+              tabIndex={-1}
               className="p-1 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-lg focus:outline-hidden transition-colors"
             >
               <EllipsisVerticalIcon className="w-5 h-5" />

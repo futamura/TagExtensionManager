@@ -1,11 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Switch } from '@headlessui/react';
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 
+import { FOCUS_RING_CLASS } from '@/constants';
 import { useExtensionContext } from '@/contexts';
 import { ExtensionCardMenu } from '@/features/options/components/main';
+import { useCardKeyboardNavigation } from '@/hooks';
 import { ExtensionModel } from '@/models';
+import { focusSearchInput, getCards } from '@/utils';
 
 /**
  * Extension card props.
@@ -44,6 +47,10 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
    * The button ref.
    */
   const buttonRef = useRef<HTMLButtonElement>(null);
+  /**
+   * The card root ref.
+   */
+  const cardRef = useRef<HTMLDivElement>(null);
 
   /**
    * Check if extension has options page on mount.
@@ -94,12 +101,61 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
   };
 
   /**
+   * Toggle the extension from the keyboard. When the toggle removes the card
+   * from the current filter, focus moves to the card now at the same position.
+   */
+  const handleKeyboardToggle = useCallback(async () => {
+    if (extension.locked) return;
+
+    const index = cardRef.current ? getCards().indexOf(cardRef.current) : -1;
+    await toggleEnabled(extension.id, !extension.enabled);
+    requestAnimationFrame(() => {
+      if (cardRef.current?.isConnected) return;
+
+      const cards = getCards();
+      if (cards.length === 0) {
+        focusSearchInput();
+        return;
+      }
+      cards[Math.min(Math.max(index, 0), cards.length - 1)].focus();
+    });
+  }, [extension.id, extension.enabled, extension.locked, toggleEnabled]);
+
+  /**
+   * Open the card menu from the keyboard.
+   * A synthetic Enter keydown is used instead of click() because Headless UI
+   * ignores click() after the button was last pressed with a mouse; Enter also
+   * focuses the first menu item.
+   */
+  const handleKeyboardOpenMenu = useCallback(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    button.focus();
+    button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+  }, []);
+
+  /**
+   * The keydown handler for the card root.
+   */
+  const handleKeyDown = useCardKeyboardNavigation({
+    onToggle: handleKeyboardToggle,
+    onOpen: handleCardClick,
+    onOpenMenu: handleKeyboardOpenMenu,
+  });
+
+  /**
    * Render the extension card.
    * @returns
    */
   return (
     <div
-      className={`rounded-xl px-3 py-2 ${extension.enabled && hasOptionsPage ? 'cursor-pointer' : ''} ${
+      ref={cardRef}
+      tabIndex={0}
+      data-extension-card
+      aria-label={extension.name}
+      onKeyDownCapture={handleKeyDown}
+      className={`rounded-xl px-3 py-2 focus:outline-hidden ${FOCUS_RING_CLASS} ${extension.enabled && hasOptionsPage ? 'cursor-pointer' : ''} ${
         isHovered && extension.enabled && hasOptionsPage ? 'bg-zinc-50 dark:bg-zinc-600' : 'bg-white dark:bg-zinc-700'
       } transition-colors`}
       onClick={handleCardClick}
@@ -125,6 +181,7 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
             checked={extension.enabled}
             onChange={async checked => toggleEnabled(extension.id, checked)}
             disabled={extension.locked}
+            tabIndex={-1}
             className={`${extension.enabled ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-600'} relative inline-flex h-4 w-7 items-center rounded-full focus:outline-hidden transition-opacity ${
               extension.locked ? 'opacity-50 cursor-not-allowed' : ''
             }`}
