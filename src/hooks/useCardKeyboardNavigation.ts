@@ -45,6 +45,9 @@ export const useCardKeyboardNavigation = ({ onToggle, onOpen, onOpenMenu }: Card
       e.preventDefault();
       e.stopPropagation();
 
+      /** Holding an action key must not toggle or open repeatedly; arrow keys may repeat */
+      if (!isArrow && e.repeat) return;
+
       /** A control inside the card (after mouse use or focus restore) hands focus back to the card */
       if (target !== card) card.focus();
 

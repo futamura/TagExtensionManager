@@ -11,6 +11,21 @@ import { ExtensionModel } from '@/models';
 import { focusSearchInput, getCards } from '@/utils';
 
 /**
+ * Focus ring shown on the card while a control inside it (e.g. the menu button
+ * after the menu closes) has keyboard focus.
+ */
+const CARD_INNER_FOCUS_RING_CLASS = 'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-zinc-400 dark:has-[:focus-visible]:ring-zinc-500';
+
+/**
+ * Button kept out of the Tab order. Headless UI Switch overrides a tabIndex
+ * prop of -1 with 0, so the value is forced here instead.
+ */
+const UntabbableButton = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<'button'>>((props, ref) => (
+  <button {...props} ref={ref} tabIndex={-1} />
+));
+UntabbableButton.displayName = 'UntabbableButton';
+
+/**
  * Extension card props.
  *
  * @param extension - The extension to display.
@@ -136,6 +151,16 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
   }, []);
 
   /**
+   * Keep mouse clicks on the card body from focusing the card, so mouse users
+   * keep the original Space and arrow key behavior (page scrolling).
+   *
+   * @param e - The mouse event.
+   */
+  const handleCardMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!(e.target as HTMLElement).closest('button')) e.preventDefault();
+  };
+
+  /**
    * The keydown handler for the card root.
    */
   const handleKeyDown = useCardKeyboardNavigation({
@@ -154,8 +179,10 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
       tabIndex={0}
       data-extension-card
       aria-label={extension.name}
+      role="group"
       onKeyDownCapture={handleKeyDown}
-      className={`rounded-xl px-3 py-2 focus:outline-hidden ${FOCUS_RING_CLASS} ${extension.enabled && hasOptionsPage ? 'cursor-pointer' : ''} ${
+      onMouseDown={handleCardMouseDown}
+      className={`rounded-xl px-3 py-2 focus:outline-hidden ${FOCUS_RING_CLASS} ${CARD_INNER_FOCUS_RING_CLASS} ${extension.enabled && hasOptionsPage ? 'cursor-pointer' : ''} ${
         isHovered && extension.enabled && hasOptionsPage ? 'bg-zinc-50 dark:bg-zinc-600' : 'bg-white dark:bg-zinc-700'
       } transition-colors`}
       onClick={handleCardClick}
@@ -178,10 +205,10 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
         >
           {extension.locked && <LockClosedIcon className="w-3 h-3" />}
           <Switch
+            as={UntabbableButton}
             checked={extension.enabled}
             onChange={async checked => toggleEnabled(extension.id, checked)}
             disabled={extension.locked}
-            tabIndex={-1}
             className={`${extension.enabled ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-600'} relative inline-flex h-4 w-7 items-center rounded-full focus:outline-hidden transition-opacity ${
               extension.locked ? 'opacity-50 cursor-not-allowed' : ''
             }`}
