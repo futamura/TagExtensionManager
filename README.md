@@ -18,21 +18,20 @@ A Chrome Extension for efficiently managing Chrome extensions. Group multiple ex
 ### Core Features
 
 - Intuitive tag-based extension management
-- One-click tag switching
-- Quick search by extension name
-- Bulk enable/disable extensions by tag
-- Individual tag toggle
-- Tag management (create, delete, rename, reorder)
-- Extension lock feature
-- Modern and polished design
-- Dark/Light mode support
+- Enable or disable all extensions in a tag with one click
+- Toggle individual extensions on or off
+- Instant search by extension name and description
+- Tag management: create, rename, delete, and reorder
+- Lock extensions to exclude them from bulk enable/disable
+- Keyboard navigation: move with arrow keys, toggle with Space, and press ? to see all shortcuts
+- Clean, modern design with dark and light modes
 
 ### Extension Management
 
 - View extension details
+- Open extension options pages
 - Uninstall extensions
-- Open extension options page
-- Import/Export tagged extensions
+- Back up and restore your tags, assignments, and extension states (import/export)
 
 ## Installation
 
