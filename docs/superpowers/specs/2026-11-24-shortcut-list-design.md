@@ -44,7 +44,7 @@ While the panel is open, `?` does nothing (the dialog guard applies). It closes 
 
 ### Header button
 
-- A round button showing a bold `?`, placed after Export / Import.
+- A circular button placed after Export / Import, as tall as them (`self-stretch` + `aspect-square`), showing the question mark of Heroicons' outline `QuestionMarkCircleIcon` without its outer circle (changed from a bold `?` character after the manual check on 2026-11-24).
 - Same background and focus ring as Export / Import (`DefaultBackgroundButton`), `title="Keyboard Shortcuts"`.
 - Takes part in arrow-key navigation (`navigable`), like the other toolbar buttons.
 

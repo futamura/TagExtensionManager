@@ -7,6 +7,28 @@ import { ExtensionShortcutDialog } from '@/features/options/components/main/Exte
 import { useBackup, useShortcutListKey } from '@/hooks';
 
 /**
+ * The question mark of Heroicons' outline QuestionMarkCircleIcon without the outer circle,
+ * so the round button background acts as the circle.
+ *
+ * @param className - The class name of the svg element.
+ * @returns The QuestionMarkIcon component.
+ */
+const QuestionMarkIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    viewBox="4 4 16 16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    className={className}
+  >
+    <path d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M12 17.25h.008v.008H12v-.008Z" />
+  </svg>
+);
+
+/**
  * The component for managing profile export/import.
  * @returns The ExtensionHeader component
  */
@@ -40,8 +62,13 @@ export const ExtensionHeader: React.FC = () => {
           <span className="text-sm">Import</span>
         </DefaultBackgroundButton>
         <input ref={fileInputRef} type="file" accept=".json" onChange={handleImportProfile} className="hidden" />
-        <DefaultBackgroundButton navigable onClick={openShortcutList} className="w-8 py-1 rounded-full" title="Keyboard Shortcuts">
-          <span className="text-sm font-bold">?</span>
+        <DefaultBackgroundButton
+          navigable
+          onClick={openShortcutList}
+          className="self-stretch aspect-square rounded-full inline-flex items-center justify-center"
+          title="Keyboard Shortcuts"
+        >
+          <QuestionMarkIcon className="w-3.5 h-3.5" />
         </DefaultBackgroundButton>
       </div>
       <ExtensionShortcutDialog isOpen={isShortcutListOpen} onClose={() => setIsShortcutListOpen(false)} />
