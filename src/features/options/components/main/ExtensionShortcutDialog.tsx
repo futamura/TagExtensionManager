@@ -44,10 +44,16 @@ const SHORTCUT_SECTIONS: ShortcutSection[] = [
     rows: [
       { label: 'Move between items', keys: ['←', '→', '↑', '↓'] },
       { label: 'Toggle / rename a tag', keys: ['Space', 'Enter'] },
+      { label: 'Add a tag / finish renaming', keys: ['Enter'] },
       { label: 'Close the dialog', keys: ['Esc'] },
     ],
   },
 ];
+
+/**
+ * The note on arrow keys inside text fields, where only up and down move between items.
+ */
+const TEXT_FIELD_NOTE = 'In text fields, ← → move the cursor instead.';
 
 interface ExtensionShortcutDialogProps {
   isOpen: boolean;
@@ -85,6 +91,7 @@ export const ExtensionShortcutDialog: React.FC<ExtensionShortcutDialogProps> = (
             </ul>
           </section>
         ))}
+        <p className="text-base text-zinc-500 dark:text-zinc-400">{TEXT_FIELD_NOTE}</p>
       </div>
     </DialogRoot>
   );

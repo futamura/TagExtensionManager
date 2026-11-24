@@ -66,12 +66,16 @@ Rows are grouped under small uppercase section headings; each row has the descri
 | Extension card | Open menu | `M` |
 | Tag dialogs | Move between items | `←` `→` `↑` `↓` |
 | Tag dialogs | Toggle / rename a tag | `Space` `Enter` |
+| Tag dialogs | Add a tag / finish renaming | `Enter` |
 | Tag dialogs | Close the dialog | `Esc` |
+
+Below the sections, a note: "In text fields, ← → move the cursor instead." Inside the search fields and the tag dialog inputs, only `↑` / `↓` move between items (`handleNavInputKeyDown`). In Edit Tags, `Enter` adds a tag from the search field and confirms a rename in the rename input (FUT-517).
 
 Look (approved from the mockup on 2026-11-24):
 
 - Section heading: `text-sm` (10px), semibold, uppercase, muted zinc.
 - Row text: `text-base` (12px).
+- Text-field note: `text-base`, same muted zinc as the section headings (added in FUT-517).
 - Key cap: same background as the shared buttons (`zinc-200` / `zinc-700`), small rounded rectangle, centered text, min width so single-character keys look square.
 - Fits the side panel without scrolling at normal heights; scrolls with the dialog otherwise.
 
