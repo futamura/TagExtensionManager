@@ -61,3 +61,48 @@ Same as the card handler: ignore keys while a dialog is open, during IME composi
 - Generalize the card selector and `findAdjacentCard` in `src/utils/cardNavigation.ts` (naming is the builder's call); mark navigable elements with a data attribute.
 - Where the shared button handler lives (a hook under `src/hooks/` is preferred).
 - Focus ring styling already exists for the shared buttons (FUT-508); no styling change expected.
+
+## Scope extension: tag dialogs (2026-11-24, Approved)
+
+The toolbar / list part above is implemented and manually verified. FUT-509 was extended to cover the Select Tags and Edit Tags dialogs.
+
+### Approach
+
+Reuse the same navigation graph, scoped to the dialog that holds focus. A dedicated per-dialog handler was rejected (two behaviors to learn and maintain); replacing the chips with Headless UI Listbox was rejected (changes markup and look).
+
+### Scope rule
+
+- An element inside a dialog navigates only among navigable elements inside the same dialog.
+- An element outside any dialog navigates only among elements outside dialogs (unchanged), and stays ignored while a dialog is open.
+
+### Navigable elements in dialogs
+
+| Dialog | Elements |
+| --- | --- |
+| Both | Header close button, search input |
+| Select Tags | Tag chips |
+| Edit Tags | Add button, each tag's name button and delete (×) button |
+
+The delete confirmation dialog (Cancel / Delete) is not included; it keeps Tab.
+
+### Keys in dialogs
+
+| Where | Key | Action |
+| --- | --- | --- |
+| Any navigable element | arrows | Same rule as the main page, within the dialog |
+| Search input | `↑` / `↓` | Same as the main search input; `←` / `→` keep moving the caret |
+| Select Tags chip | `Space` / `Enter` | Toggle the tag (native button) |
+| Edit Tags name button | `Space` / `Enter` | Start renaming (native button; the input is focused as today) |
+| Edit Tags rename input | `←` / `→` | Move the caret (not handled) |
+| Edit Tags rename input | `Enter` | Commit (as today), then focus that tag's name button |
+| Edit Tags × button | `Space` / `Enter` | Open the delete confirmation (as today) |
+| Any | `Esc` | Not handled by navigation; the dialog closes as today |
+
+### Focus after changes
+
+- After a tag is deleted: focus the next tag's name button, else the previous one, else the dialog's search input.
+- Closing a dialog returns focus to the button that opened it (Headless UI default, unchanged).
+
+### Non-goals
+
+- Reordering tags with the keyboard (drag only, may be added later).
