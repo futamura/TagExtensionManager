@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { ArrowDownTrayIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 
 import { DefaultBackgroundButton } from '@/components';
 import { ExtensionShortcutDialog } from '@/features/options/components/main/ExtensionShortcutDialog';
-import { useBackup } from '@/hooks';
+import { useBackup, useShortcutListKey } from '@/hooks';
 
 /**
  * The component for managing profile export/import.
@@ -14,6 +14,8 @@ export const ExtensionHeader: React.FC = () => {
   const { exportFile, importFile } = useBackup();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isShortcutListOpen, setIsShortcutListOpen] = useState(false);
+  const openShortcutList = useCallback(() => setIsShortcutListOpen(true), []);
+  useShortcutListKey(openShortcutList);
 
   /**
    * Handle the import profile event.
@@ -40,7 +42,7 @@ export const ExtensionHeader: React.FC = () => {
         <input ref={fileInputRef} type="file" accept=".json" onChange={handleImportProfile} className="hidden" />
         <DefaultBackgroundButton
           navigable
-          onClick={() => setIsShortcutListOpen(true)}
+          onClick={openShortcutList}
           className="w-5 h-5 rounded-full text-sm font-bold inline-flex items-center justify-center"
           title="Keyboard Shortcuts"
         >
