@@ -43,11 +43,27 @@ export const NAV_SCROLL_CONTAINER_SELECTOR = '[data-nav-scroll-container]';
 const getLayoutTop = (element: HTMLElement, rect: DOMRect): number => rect.top + (element.closest(NAV_SCROLL_CONTAINER_SELECTOR)?.scrollTop ?? 0);
 
 /**
- * Get all navigable elements in DOM order.
+ * Selector matching a modal dialog.
+ */
+const DIALOG_SELECTOR = '[role="dialog"]';
+
+/**
+ * Get the navigation scope of an element: the dialog that contains it, or null for the main page.
  *
+ * @param element - The element.
+ * @returns The containing dialog, or null.
+ */
+export const getNavScope = (element: HTMLElement): HTMLElement | null => element.closest<HTMLElement>(DIALOG_SELECTOR);
+
+/**
+ * Get the navigable elements of a scope in DOM order.
+ * Elements inside a dialog belong only to that dialog; the main page scope excludes all dialogs.
+ *
+ * @param scope - The dialog to navigate within, or null for the main page.
  * @returns The navigable elements.
  */
-export const getNavItems = (): HTMLElement[] => Array.from(document.querySelectorAll<HTMLElement>(NAV_ITEM_SELECTOR));
+export const getNavItems = (scope: HTMLElement | null = null): HTMLElement[] =>
+  Array.from(document.querySelectorAll<HTMLElement>(NAV_ITEM_SELECTOR)).filter(item => getNavScope(item) === scope);
 
 /**
  * Get all extension cards in DOM order.
@@ -115,7 +131,7 @@ export const focusSearchInput = (): void => {
  *
  * @returns True when a dialog element exists in the document.
  */
-export const isDialogOpen = (): boolean => document.querySelector('[role="dialog"]') !== null;
+export const isDialogOpen = (): boolean => document.querySelector(DIALOG_SELECTOR) !== null;
 
 /**
  * Arrow keys handled on a navigable button.
@@ -123,16 +139,34 @@ export const isDialogOpen = (): boolean => document.querySelector('[role="dialog
 const NAV_ARROW_KEYS: string[] = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
 /**
- * Keydown handler for navigable buttons (toolbar and group header buttons).
- * Arrow keys move focus to the adjacent navigable element and Escape returns to the search input.
+ * Resolve the navigation scope for a key event, or undefined when the event must be ignored
+ * (IME composition, modifier keys, or a main page element while a dialog is open).
+ *
+ * @param e - The keyboard event.
+ * @returns The scope (a dialog or null for the main page), or undefined to ignore the event.
+ */
+const resolveScope = (e: KeyboardEvent<HTMLElement>): HTMLElement | null | undefined => {
+  if (e.nativeEvent.isComposing || e.ctrlKey || e.metaKey || e.altKey) return undefined;
+
+  const scope = getNavScope(e.currentTarget);
+  if (!scope && isDialogOpen()) return undefined;
+  return scope;
+};
+
+/**
+ * Keydown handler for navigable buttons.
+ * Arrow keys move focus to the adjacent navigable element in the same scope. On the main page,
+ * Escape returns to the search input; inside a dialog, Escape is left to the dialog so it closes.
  * Space and Enter are left to the native button.
  *
  * @param e - The keyboard event.
  */
 export const handleNavItemKeyDown = (e: KeyboardEvent<HTMLElement>): void => {
-  if (isDialogOpen() || e.nativeEvent.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
+  const scope = resolveScope(e);
+  if (scope === undefined) return;
 
   if (e.key === 'Escape') {
+    if (scope) return;
     e.preventDefault();
     focusSearchInput();
     return;
@@ -140,5 +174,26 @@ export const handleNavItemKeyDown = (e: KeyboardEvent<HTMLElement>): void => {
   if (!NAV_ARROW_KEYS.includes(e.key)) return;
 
   e.preventDefault();
-  findAdjacentItem(e.currentTarget, e.key as NavDirection, getNavItems())?.focus();
+  findAdjacentItem(e.currentTarget, e.key as NavDirection, getNavItems(scope))?.focus();
+};
+
+/**
+ * Keydown handler for navigable text inputs (search fields).
+ * Up goes to the leftmost element of the row above; down goes to the nearest element below.
+ * Left and right are left to the input so they keep moving the caret.
+ *
+ * @param e - The keyboard event.
+ */
+export const handleNavInputKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+
+  const scope = resolveScope(e);
+  if (scope === undefined) return;
+
+  const items = getNavItems(scope);
+  const next = e.key === 'ArrowUp' ? findAdjacentItem(e.currentTarget, 'ArrowUp', items, 'start') : findAdjacentItem(e.currentTarget, 'ArrowDown', items);
+  if (!next) return;
+
+  e.preventDefault();
+  next.focus();
 };

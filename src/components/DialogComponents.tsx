@@ -4,6 +4,7 @@ import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/re
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 import { FOCUS_RING_CLASS } from '@/constants';
+import { handleNavItemKeyDown } from '@/utils';
 
 interface DialogRootProps {
   isOpen: boolean;
@@ -62,7 +63,12 @@ export const DialogHeader: React.FC<DialogHeaderProps> = ({ title, onClose }) =>
     <div className="flex items-center justify-between">
       <h2 className="text-xl font-bold">{title}</h2>
       {onClose && (
-        <button onClick={onClose} className={`dialog-close-button rounded-sm focus:outline-hidden ${FOCUS_RING_CLASS}`}>
+        <button
+          onClick={onClose}
+          data-nav-item
+          onKeyDown={handleNavItemKeyDown}
+          className={`dialog-close-button rounded-sm focus:outline-hidden ${FOCUS_RING_CLASS}`}
+        >
           <XMarkIcon className="h-6 w-6" />
         </button>
       )}

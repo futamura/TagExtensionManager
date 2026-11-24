@@ -15,6 +15,7 @@ export const TagSelectorListItem: React.FC<TagSelectorListItemProps> = ({ tag })
   const { currentTagIds, selectTag } = useTagSelectorContext();
   return (
     <DefaultBackgroundButton
+      navigable
       onClick={() => selectTag(tag.id)}
       className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transition-opacity ${
         currentTagIds.includes(tag.id) ? '' : 'opacity-50 hover:opacity-100'

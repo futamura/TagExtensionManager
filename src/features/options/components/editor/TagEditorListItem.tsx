@@ -7,6 +7,7 @@ import { TagIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { CancelButtonComponent, DefaultBackgroundDiv, DeleteButtonComponent, DialogHeader, DialogRoot } from '@/components';
 import { useTagEditorContext } from '@/contexts';
 import { TagModel } from '@/models';
+import { handleNavItemKeyDown } from '@/utils';
 
 /**
  * The props for the TagEditorListItem component.
@@ -48,6 +49,11 @@ export const TagEditorListItem: React.FC<TagEditorListItemProps> = React.memo(({
    * The ref for the input element.
    */
   const inputRef = useRef<HTMLInputElement>(null);
+
+  /**
+   * The name button, focused again after a rename is committed with Enter.
+   */
+  const nameButtonRef = useRef<HTMLButtonElement>(null);
 
   /**
    * The drag and drop state.
@@ -150,12 +156,24 @@ export const TagEditorListItem: React.FC<TagEditorListItemProps> = React.memo(({
                 className="rounded-xs pl-1 bg-zinc-100 dark:bg-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-500 focus:outline-hidden transition-colors"
               />
             ) : (
-              <button onClick={() => startEditing(tag.id, tag.name)} className="select-none">
+              <button
+                ref={nameButtonRef}
+                onClick={() => startEditing(tag.id, tag.name)}
+                data-nav-item
+                data-tag-name-button
+                onKeyDown={handleNavItemKeyDown}
+                className="select-none"
+              >
                 {tag.name}
               </button>
             )}
           </div>
-          <button onClick={handleDeleteClick} className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-300">
+          <button
+            onClick={handleDeleteClick}
+            data-nav-item
+            onKeyDown={handleNavItemKeyDown}
+            className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-300"
+          >
             <XMarkIcon className="w-4 h-4" />
           </button>
         </DefaultBackgroundDiv>

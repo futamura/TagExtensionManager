@@ -43,16 +43,21 @@ interface XLargeButtonComponentProps {
   className?: string;
   onClick: () => void;
   children?: React.ReactNode;
+  /** Whether the button takes part in arrow-key navigation */
+  navigable?: boolean;
 }
 
 export const XLargeButtonComponent: React.FC<XLargeButtonComponentProps> = ({
   className = 'bg-zinc-600 dark:bg-zinc-500 hover:bg-zinc-300 dark:hover:bg-zinc-600',
   onClick,
   children,
+  navigable = false,
 }) => {
   return (
     <button
       onClick={onClick}
+      data-nav-item={navigable || undefined}
+      onKeyDown={navigable ? handleNavItemKeyDown : undefined}
       className={`h-10 px-3 py-2 text-lg font-medium rounded-full text-zinc-100 focus:outline-hidden ${FOCUS_RING_CLASS} transition-colors ${className}`}
     >
       {children}
@@ -62,7 +67,7 @@ export const XLargeButtonComponent: React.FC<XLargeButtonComponentProps> = ({
 
 export const AddButtonComponent: React.FC<XLargeButtonComponentProps> = ({ onClick }) => {
   return (
-    <XLargeButtonComponent className="bg-zinc-600 dark:bg-zinc-500 hover:bg-zinc-300 dark:hover:bg-zinc-600" onClick={onClick}>
+    <XLargeButtonComponent navigable className="bg-zinc-600 dark:bg-zinc-500 hover:bg-zinc-300 dark:hover:bg-zinc-600" onClick={onClick}>
       Add
     </XLargeButtonComponent>
   );

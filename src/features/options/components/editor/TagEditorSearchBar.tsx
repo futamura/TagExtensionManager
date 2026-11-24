@@ -4,6 +4,7 @@ import { TagIcon } from '@heroicons/react/24/outline';
 
 import { AddButtonComponent, SearchBarComponent } from '@/components';
 import { useTagEditorContext } from '@/contexts';
+import { handleNavInputKeyDown } from '@/utils';
 
 /**
  * The TagEditorSearchBar component.
@@ -21,10 +22,12 @@ export const TagEditorSearchBar: React.FC = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleAddTag();
+      return;
     }
+    handleNavInputKeyDown(e);
   };
 
   useEffect(() => {
@@ -39,6 +42,7 @@ export const TagEditorSearchBar: React.FC = () => {
       placeholder="Enter new tag name..."
       onInputChange={e => setNewTagName(e.target.value)}
       onInputKeyDown={handleKeyDown}
+      navItem
       icon={<TagIcon className="h-5 w-5" aria-hidden="true" />}
       buttons={<AddButtonComponent onClick={handleAddTag} />}
     />
