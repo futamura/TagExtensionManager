@@ -10,3 +10,4 @@ export * from './ExtensionMain';
 export * from './ExtensionCardMenu';
 export * from './ExtensionCard';
 export * from './ExtensionHeader';
+export * from './ExtensionShortcutDialog';
