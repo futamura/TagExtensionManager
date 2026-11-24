@@ -24,7 +24,8 @@ export const TagEditorSearchBar: React.FC = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleAddTag();
+      /** Enter that confirms an IME conversion must not add the tag */
+      if (!e.nativeEvent.isComposing) handleAddTag();
       return;
     }
     handleNavInputKeyDown(e);

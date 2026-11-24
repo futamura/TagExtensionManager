@@ -181,7 +181,8 @@ export const TagEditorListItem: React.FC<TagEditorListItemProps> = React.memo(({
                 onChange={e => changeTagName(tag.id, e.target.value, false)}
                 onBlur={() => changeTagName(tag.id, editingTagName, true)}
                 onKeyDown={e => {
-                  if (e.key === 'Enter') {
+                  /** Enter that confirms an IME conversion must not commit the rename */
+                  if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                     e.preventDefault();
                     restoreFocusRef.current = true;
                     changeTagName(tag.id, editingTagName, true);
