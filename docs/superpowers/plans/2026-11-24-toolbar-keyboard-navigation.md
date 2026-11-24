@@ -99,3 +99,50 @@ git commit -m "feat: move between toolbar and group buttons with arrow keys (FUT
 - [ ] **Step 2:** Check every row of the spec's key table, then each Review Focus item (narrow panel wrapping, Edit Tags dialog open, no-match search, IME composition, dimmed / Untagged chips).
 - [ ] **Step 3:** Confirm FUT-508 card keys (`Space`, `Enter`, `M`, `Esc`, `/`) still work and mouse appearance is unchanged.
 - [ ] **Step 4:** Fix anything found (re-run Task 2 Step 4 checks, commit as `fix: ... (FUT-509)`), then report results to the user.
+
+---
+
+## Scope extension: tag dialogs (2026-11-24)
+
+Spec section: "Scope extension: tag dialogs" in the same spec. Tasks 1-3 are done (toolbar part verified in Brave).
+
+### Additional Review Focus
+
+1. Deleting a tag: the confirm dialog lives inside the deleted `TagEditorListItem` and unmounts with it; Headless UI focus restore must not override the planned focus target. → Task 5 manual check.
+2. Rename input loses focus by blur (click elsewhere): no focus jump back to the name button (only `Enter` restores). → Task 5.
+3. Select Tags with a search query that matches nothing: `↓` from the search input is a no-op. → Task 6 manual check.
+4. Main page elements while a dialog is open: still ignored (scope rule). → Task 6 manual check.
+
+### Task 4: Scope navigation to the containing dialog
+
+**Files:**
+- Modify: `src/utils/cardNavigation.ts`
+- Modify: `src/components/DialogComponents.tsx` (`DialogHeader` close button)
+- Modify: `src/components/ButtonComponents.tsx` (`AddButtonComponent` / `XLargeButtonComponent` get `navigable`)
+- Modify: `src/features/options/components/selector/TagSelectorSearchBar.tsx`, `TagSelectorListItem.tsx`
+- Modify: `src/features/options/components/editor/TagEditorSearchBar.tsx`, `TagEditorListItem.tsx`
+
+**Interfaces:**
+- `getNavItems(scope?: HTMLElement): HTMLElement[]` — when `scope` is given, return `[data-nav-item]` elements inside `scope` whose closest `[role="dialog"]` is `scope`'s dialog; without it, return elements not inside any dialog (main page, unchanged behavior).
+- `getNavScope(element: HTMLElement): HTMLElement | undefined` — `element.closest('[role="dialog"]') ?? undefined`.
+- `handleNavItemKeyDown`: if the element is inside a dialog, navigate within `getNavItems(scope)` and do not handle `Escape`; if outside, keep current behavior including the `isDialogOpen()` guard.
+- New exported `handleNavInputKeyDown(e: KeyboardEvent<HTMLInputElement>): void` for search inputs (↑ with `'start'`, ↓ center; composing / modifier guards; no-op on null) used by the main search bar and both dialog search inputs. The main search bar keeps its `isDialogOpen()` guard via the scope rule.
+- `DialogHeader` close button, `AddButtonComponent`, Select chips, Edit name buttons and × buttons are navigable (`data-nav-item` + `handleNavItemKeyDown`). Dialog search inputs pass `navItem`.
+
+- [ ] **Step 1:** Implement per Interfaces. Card handler and main search bar keep working unchanged (page scope).
+- [ ] **Step 2: Verify** `pnpm type-check && pnpm eslint-check && pnpm prettier-check && pnpm build` → exit 0.
+- [ ] **Step 3: Commit** `feat: navigate inside tag dialogs with arrow keys (FUT-509)`
+
+### Task 5: Focus restore in Edit Tags
+
+**Files:** Modify `src/features/options/components/editor/TagEditorListItem.tsx`
+
+- After `Enter` commits a rename, focus this tag's name button once it re-renders (flag set in the input's Enter handler, consumed in an effect when `editingTagId` leaves this tag). Blur commits do not restore focus.
+- In `handleConfirmDelete`, before `deleteTag`, pick the target among the Edit Tags dialog's name buttons (marked `data-tag-name-button`): next, else previous, else the dialog's search input; focus it in `requestAnimationFrame` after deletion.
+- [ ] **Step 1:** Implement.
+- [ ] **Step 2: Verify** same commands → exit 0.
+- [ ] **Step 3: Commit** `feat: keep keyboard focus after renaming or deleting a tag (FUT-509)`
+
+### Task 6: Manual verification in Brave (dialogs)
+
+- [ ] `pnpm start`, reload `dist/dev`; check every row of the dialog key table and the Additional Review Focus items in both side panel and options page; re-check the main page quickly.
