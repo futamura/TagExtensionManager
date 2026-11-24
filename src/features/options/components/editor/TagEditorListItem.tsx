@@ -119,13 +119,47 @@ export const TagEditorListItem: React.FC<TagEditorListItemProps> = React.memo(({
     }
   }, [editingTagId]);
 
+  /**
+   * Whether the name button should take focus once the rename input closes.
+   * Set only when the rename is committed with Enter, so a blur commit does not pull focus back.
+   */
+  const restoreFocusRef = useRef(false);
+
+  /**
+   * Focus the name button again after a rename committed with Enter.
+   */
+  useEffect(() => {
+    if (editingTagId === tag.id || !restoreFocusRef.current) return;
+    restoreFocusRef.current = false;
+    nameButtonRef.current?.focus();
+  }, [editingTagId]);
+
   const handleDeleteClick = () => {
     setIsDeleteDialogOpen(true);
   };
 
+  /**
+   * Pick where focus goes after this tag is deleted: the next tag's name button,
+   * else the previous one, else the dialog's search input.
+   *
+   * @returns The element to focus, or null when none is found.
+   */
+  const findFocusTargetAfterDelete = (): HTMLElement | null => {
+    const dialog = ref.current?.closest<HTMLElement>('[role="dialog"]');
+    if (!dialog) return null;
+
+    const nameButtons = Array.from(dialog.querySelectorAll<HTMLElement>('[data-tag-name-button]'));
+    const index = nameButtonRef.current ? nameButtons.indexOf(nameButtonRef.current) : -1;
+    const neighbor = index === -1 ? null : (nameButtons[index + 1] ?? nameButtons[index - 1] ?? null);
+    return neighbor ?? dialog.querySelector<HTMLElement>('input[data-nav-item]');
+  };
+
   const handleConfirmDelete = () => {
+    const focusTarget = findFocusTargetAfterDelete();
     deleteTag(tag.id);
     setIsDeleteDialogOpen(false);
+    /** Wait for the deleted item (and its confirm dialog) to unmount before moving focus */
+    requestAnimationFrame(() => focusTarget?.focus());
   };
 
   /**
@@ -149,6 +183,7 @@ export const TagEditorListItem: React.FC<TagEditorListItemProps> = React.memo(({
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
+                    restoreFocusRef.current = true;
                     changeTagName(tag.id, editingTagName, true);
                   }
                 }}
