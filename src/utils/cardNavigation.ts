@@ -27,6 +27,22 @@ export type NavDirection = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 const POSITION_TOLERANCE = 1;
 
 /**
+ * Selector matching the scroll container that holds the extension list.
+ */
+export const NAV_SCROLL_CONTAINER_SELECTOR = '[data-nav-scroll-container]';
+
+/**
+ * Get the vertical position of an element as if its scroll container were not scrolled.
+ * Without this, list items scrolled out of view above the list would sit at the same
+ * height as the toolbar and be picked when moving up or down from it.
+ *
+ * @param element - The element.
+ * @param rect - The element's bounding rect.
+ * @returns The unscrolled top position.
+ */
+const getLayoutTop = (element: HTMLElement, rect: DOMRect): number => rect.top + (element.closest(NAV_SCROLL_CONTAINER_SELECTOR)?.scrollTop ?? 0);
+
+/**
  * Get all navigable elements in DOM order.
  *
  * @returns The navigable elements.
@@ -65,6 +81,7 @@ export const findAdjacentItem = (
   if (direction === 'ArrowRight') return items[index + 1] ?? null;
 
   const currentRect = current.getBoundingClientRect();
+  const currentTop = getLayoutTop(current, currentRect);
   const anchorX = (rect: DOMRect) => (align === 'start' ? rect.left : rect.left + rect.width / 2);
   const currentX = anchorX(currentRect);
   const isDown = direction === 'ArrowDown';
@@ -73,7 +90,8 @@ export const findAdjacentItem = (
   const candidates = items
     .filter(item => item !== current)
     .map(item => ({ item, rect: item.getBoundingClientRect() }))
-    .map(entry => ({ ...entry, distance: isDown ? entry.rect.top - currentRect.top : currentRect.top - entry.rect.top }))
+    .map(entry => ({ ...entry, top: getLayoutTop(entry.item, entry.rect) }))
+    .map(entry => ({ ...entry, distance: isDown ? entry.top - currentTop : currentTop - entry.top }))
     .filter(entry => entry.distance > POSITION_TOLERANCE);
   if (candidates.length === 0) return null;
 

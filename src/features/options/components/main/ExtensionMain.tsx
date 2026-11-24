@@ -45,7 +45,7 @@ export const ExtensionMain: React.FC = () => {
           <ExtensionSearchBar />
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" data-nav-scroll-container>
           <div className="h-full">
             <ExtensionList />
           </div>
