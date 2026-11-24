@@ -65,7 +65,7 @@ export const ExtensionHeader: React.FC = () => {
         <DefaultBackgroundButton
           navigable
           onClick={openShortcutList}
-          className="self-stretch aspect-square rounded-full inline-flex items-center justify-center"
+          className="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center"
           title="Keyboard Shortcuts"
         >
           <QuestionMarkIcon className="w-3.5 h-3.5" />
