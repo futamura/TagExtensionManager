@@ -20,7 +20,7 @@ export const ExtensionTagListEditButton: React.FC = () => {
    */
   return (
     <>
-      <DefaultBackgroundButton onClick={() => setIsTagEditorOpen(true)} className="px-3 py-1 text-sm font-medium rounded-full">
+      <DefaultBackgroundButton navigable onClick={() => setIsTagEditorOpen(true)} className="px-3 py-1 text-sm font-medium rounded-full">
         <PencilIcon className="w-3 h-3 inline-flex mr-1" strokeWidth={1} />
         <span className="">Edit Tags</span>
       </DefaultBackgroundButton>

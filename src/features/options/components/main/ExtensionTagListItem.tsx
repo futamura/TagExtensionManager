@@ -44,6 +44,7 @@ export const ExtensionTagListItem: React.FC<ExtensionTagListItemProps> = ({ tag 
    */
   return (
     <DefaultBackgroundButton
+      navigable
       onClick={() => setVisibleTagId(isSelected ? null : tag.id)}
       className={`flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-full transition-opacity ${isSelected ? '' : visibleTagId === null ? '' : 'opacity-50'}`}
     >

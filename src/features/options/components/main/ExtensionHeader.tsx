@@ -27,11 +27,11 @@ export const ExtensionHeader: React.FC = () => {
     <div className="flex justify-between items-center">
       <h1 className="text-xl font-bold">Tag Extension Manager</h1>
       <div className="flex items-center gap-1">
-        <DefaultBackgroundButton onClick={exportFile} className="pl-2 pr-3 py-1 rounded-full" title="Export Profile">
+        <DefaultBackgroundButton navigable onClick={exportFile} className="pl-2 pr-3 py-1 rounded-full" title="Export Profile">
           <ArrowDownTrayIcon className="w-3 h-3 inline-flex mr-1" />
           <span className="text-sm">Export</span>
         </DefaultBackgroundButton>
-        <DefaultBackgroundButton onClick={() => fileInputRef.current?.click()} className="pl-2 pr-3 py-1 rounded-full" title="Import Profile">
+        <DefaultBackgroundButton navigable onClick={() => fileInputRef.current?.click()} className="pl-2 pr-3 py-1 rounded-full" title="Import Profile">
           <ArrowUpTrayIcon className="w-3 h-3 inline-flex mr-1" />
           <span className="text-sm">Import</span>
         </DefaultBackgroundButton>

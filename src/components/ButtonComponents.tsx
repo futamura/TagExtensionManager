@@ -1,19 +1,24 @@
 import React from 'react';
 
 import { FOCUS_RING_CLASS } from '@/constants';
+import { handleNavItemKeyDown } from '@/utils';
 
 interface DefaultBackgroundButtonProps {
   className?: string;
   title?: string;
   onClick: () => void;
   children?: React.ReactNode;
+  /** Whether the button takes part in arrow-key navigation */
+  navigable?: boolean;
 }
 
-export const DefaultBackgroundButton: React.FC<DefaultBackgroundButtonProps> = ({ className, title, onClick, children }) => {
+export const DefaultBackgroundButton: React.FC<DefaultBackgroundButtonProps> = ({ className, title, onClick, children, navigable = false }) => {
   return (
     <button
       onClick={onClick}
       title={title}
+      data-nav-item={navigable || undefined}
+      onKeyDown={navigable ? handleNavItemKeyDown : undefined}
       className={`bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 focus:outline-hidden ${FOCUS_RING_CLASS} transition-colors ${className}`}
     >
       {children}

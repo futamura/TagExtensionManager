@@ -35,6 +35,7 @@ export const ExtensionToggleAllButtons: React.FC = () => {
      */
     <div className="flex">
       <DefaultBackgroundButton
+        navigable
         className="inline-flex items-center gap-1 ps-3 pe-2 py-1 text-sm rounded-l-full mr-[1px]"
         onClick={() => bulkToggle(allExtensions, true)}
       >
@@ -42,6 +43,7 @@ export const ExtensionToggleAllButtons: React.FC = () => {
         <span className="text-sm">Enable All</span>
       </DefaultBackgroundButton>
       <DefaultBackgroundButton
+        navigable
         className="inline-flex items-center gap-1 ps-2 pe-3 py-1 text-sm rounded-r-full"
         onClick={() => bulkToggle(allExtensions, false)}
       >

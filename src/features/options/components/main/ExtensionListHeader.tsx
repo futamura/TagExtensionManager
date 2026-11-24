@@ -45,10 +45,14 @@ export const ExtensionListHeader: React.FC<ExtensionListHeaderProps> = ({
       </div>
       <div className="flex items-center gap-2">
         <div className="flex">
-          <DefaultBackgroundButton onClick={() => bulkToggle(extensions, true)} className={`ps-3 pe-2 py-1 text-sm font-medium rounded-l-full mr-[1px]`}>
+          <DefaultBackgroundButton
+            navigable
+            onClick={() => bulkToggle(extensions, true)}
+            className={`ps-3 pe-2 py-1 text-sm font-medium rounded-l-full mr-[1px]`}
+          >
             Enable
           </DefaultBackgroundButton>
-          <DefaultBackgroundButton onClick={() => bulkToggle(extensions, false)} className={`ps-2 pe-3 py-1 text-sm font-medium rounded-r-full`}>
+          <DefaultBackgroundButton navigable onClick={() => bulkToggle(extensions, false)} className={`ps-2 pe-3 py-1 text-sm font-medium rounded-r-full`}>
             Disable
           </DefaultBackgroundButton>
         </div>

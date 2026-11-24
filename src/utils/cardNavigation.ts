@@ -1,3 +1,5 @@
+import type { KeyboardEvent } from 'react';
+
 /**
  * Selector matching every element reachable with arrow-key navigation
  * (toolbar buttons, the search input, group header buttons and extension cards).
@@ -96,3 +98,29 @@ export const focusSearchInput = (): void => {
  * @returns True when a dialog element exists in the document.
  */
 export const isDialogOpen = (): boolean => document.querySelector('[role="dialog"]') !== null;
+
+/**
+ * Arrow keys handled on a navigable button.
+ */
+const NAV_ARROW_KEYS: string[] = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
+/**
+ * Keydown handler for navigable buttons (toolbar and group header buttons).
+ * Arrow keys move focus to the adjacent navigable element and Escape returns to the search input.
+ * Space and Enter are left to the native button.
+ *
+ * @param e - The keyboard event.
+ */
+export const handleNavItemKeyDown = (e: KeyboardEvent<HTMLElement>): void => {
+  if (isDialogOpen() || e.nativeEvent.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
+
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    focusSearchInput();
+    return;
+  }
+  if (!NAV_ARROW_KEYS.includes(e.key)) return;
+
+  e.preventDefault();
+  findAdjacentItem(e.currentTarget, e.key as NavDirection, getNavItems())?.focus();
+};
