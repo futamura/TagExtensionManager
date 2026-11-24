@@ -178,6 +178,7 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
       ref={cardRef}
       tabIndex={0}
       data-extension-card
+      data-nav-item
       aria-label={extension.name}
       role="group"
       onKeyDownCapture={handleKeyDown}

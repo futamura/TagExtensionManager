@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 import { SearchBarComponent } from '@/components';
 import { useExtensionContext } from '@/contexts';
-import { focusSearchInput, getCards, isDialogOpen, SEARCH_INPUT_ID } from '@/utils';
+import { findAdjacentItem, focusSearchInput, getNavItems, isDialogOpen, SEARCH_INPUT_ID } from '@/utils';
 
 /**
  * The ExtensionSearchBar component.
@@ -88,16 +88,22 @@ const ExtensionSearchBar: React.FC = () => {
   }, []);
 
   /**
-   * Move focus from the search input to the first card with the down arrow.
+   * Move focus from the search input with the up / down arrows.
+   * Up goes to the leftmost element of the row above; down goes to the nearest element below.
+   * Left and right are left to the input so they keep moving the caret.
    */
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'ArrowDown' || e.nativeEvent.isComposing) return;
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    if (e.nativeEvent.isComposing || e.ctrlKey || e.metaKey || e.altKey || isDialogOpen()) return;
 
-    const firstCard = getCards()[0];
-    if (!firstCard) return;
+    const next =
+      e.key === 'ArrowUp'
+        ? findAdjacentItem(e.currentTarget, 'ArrowUp', getNavItems(), 'start')
+        : findAdjacentItem(e.currentTarget, 'ArrowDown', getNavItems());
+    if (!next) return;
 
     e.preventDefault();
-    firstCard.focus();
+    next.focus();
   };
 
   /**
@@ -113,6 +119,7 @@ const ExtensionSearchBar: React.FC = () => {
       placeholder="Search extensions..."
       onInputChange={handleSearch}
       onInputKeyDown={handleInputKeyDown}
+      navItem
       icon={<MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />}
     />
   );

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { CardDirection, findAdjacentCard, focusSearchInput, getCards, isDialogOpen } from '@/utils';
+import { findAdjacentItem, focusSearchInput, getNavItems, isDialogOpen, NavDirection } from '@/utils';
 
 /**
  * Actions triggered by keys pressed on a focused extension card.
@@ -12,7 +12,7 @@ interface CardKeyboardActions {
 }
 
 /**
- * Arrow keys that move focus between cards.
+ * Arrow keys that move focus to the adjacent navigable element.
  */
 const ARROW_KEYS: string[] = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
@@ -52,7 +52,7 @@ export const useCardKeyboardNavigation = ({ onToggle, onOpen, onOpenMenu }: Card
       if (target !== card) card.focus();
 
       if (isArrow) {
-        findAdjacentCard(card, e.key as CardDirection, getCards())?.focus();
+        findAdjacentItem(card, e.key as NavDirection, getNavItems())?.focus();
         return;
       }
       switch (e.key) {
