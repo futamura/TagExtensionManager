@@ -62,10 +62,14 @@ export const ExtensionHeader: React.FC = () => {
           <span className="text-sm">Import</span>
         </DefaultBackgroundButton>
         <input ref={fileInputRef} type="file" accept=".json" onChange={handleImportProfile} className="hidden" />
+        {/**
+         * Same height as Export / Import (py-1 + one inherited line box), not a fixed size:
+         * the inherited font size differs between the extension page (body 75%) and a normal page.
+         */}
         <DefaultBackgroundButton
           navigable
           onClick={openShortcutList}
-          className="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center"
+          className="h-[calc(0.5rem+1lh)] w-[calc(0.5rem+1lh)] shrink-0 rounded-full inline-flex items-center justify-center"
           title="Keyboard Shortcuts"
         >
           <QuestionMarkIcon className="w-3.5 h-3.5" />

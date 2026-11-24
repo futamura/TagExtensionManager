@@ -44,7 +44,7 @@ While the panel is open, `?` does nothing (the dialog guard applies). It closes 
 
 ### Header button
 
-- A circular button placed after Export / Import, as tall as them (fixed `w-8 h-8`, 32px, measured equal to the Export / Import height; `aspect-square` with `self-stretch` collapsed the width), showing the question mark of Heroicons' outline `QuestionMarkCircleIcon` without its outer circle (changed from a bold `?` character after the manual check on 2026-11-24).
+- A circular button placed after Export / Import, as tall as them: width and height are `calc(0.5rem + 1lh)`, the same formula as the pills (`py-1` + one inherited line box). A fixed size does not work because extension pages set `body { font-size: 75% }` (pills are 26px there, 32px on a normal page), showing the question mark of Heroicons' outline `QuestionMarkCircleIcon` without its outer circle (changed from a bold `?` character after the manual check on 2026-11-24).
 - Same background and focus ring as Export / Import (`DefaultBackgroundButton`), `title="Keyboard Shortcuts"`.
 - Takes part in arrow-key navigation (`navigable`), like the other toolbar buttons.
 
