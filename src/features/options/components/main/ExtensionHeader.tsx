@@ -40,13 +40,8 @@ export const ExtensionHeader: React.FC = () => {
           <span className="text-sm">Import</span>
         </DefaultBackgroundButton>
         <input ref={fileInputRef} type="file" accept=".json" onChange={handleImportProfile} className="hidden" />
-        <DefaultBackgroundButton
-          navigable
-          onClick={openShortcutList}
-          className="w-5 h-5 rounded-full text-sm font-bold inline-flex items-center justify-center"
-          title="Keyboard Shortcuts"
-        >
-          ?
+        <DefaultBackgroundButton navigable onClick={openShortcutList} className="w-8 py-1 rounded-full" title="Keyboard Shortcuts">
+          <span className="text-sm font-bold">?</span>
         </DefaultBackgroundButton>
       </div>
       <ExtensionShortcutDialog isOpen={isShortcutListOpen} onClose={() => setIsShortcutListOpen(false)} />
