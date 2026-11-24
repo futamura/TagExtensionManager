@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { isDialogOpen } from '@/utils';
 
 /**
- * Call onOpen when "?" is pressed outside of text fields and dialogs.
+ * Call onOpen when "?" is pressed outside of text fields, dialogs and menus.
  * Shift is allowed because it is needed to type "?".
  *
  * @param onOpen - The callback to open the shortcut list.
@@ -12,6 +12,9 @@ export const useShortcutListKey = (onOpen: () => void): void => {
   useEffect(() => {
     const handleQuestionMark = (e: KeyboardEvent) => {
       if (e.key !== '?' || e.ctrlKey || e.metaKey || e.altKey || e.isComposing || e.repeat || isDialogOpen()) return;
+
+      /** An open card menu keeps its own keys (typeahead); the panel must not open over it */
+      if (document.querySelector('[role="menu"]')) return;
 
       const target = e.target as HTMLElement | null;
       if (target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))) return;
