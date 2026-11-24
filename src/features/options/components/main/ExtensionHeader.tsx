@@ -7,6 +7,12 @@ import { ExtensionShortcutDialog } from '@/features/options/components/main/Exte
 import { useBackup, useShortcutListKey } from '@/hooks';
 
 /**
+ * Centers a 0.75rem icon in the line box. The default vertical-align: middle leaves it
+ * about 1-2px low next to the smaller label text, and the gap changes with the font size.
+ */
+const LINE_CENTERED_ICON_CLASS = 'align-top relative top-[calc((1lh_-_0.75rem)/2)]';
+
+/**
  * The question mark of Heroicons' outline QuestionMarkCircleIcon without the outer circle,
  * so the round button background acts as the circle.
  *
@@ -54,11 +60,11 @@ export const ExtensionHeader: React.FC = () => {
       <h1 className="text-xl font-bold">Tag Extension Manager</h1>
       <div className="flex items-center gap-1">
         <DefaultBackgroundButton navigable onClick={exportFile} className="pl-2 pr-3 py-1 rounded-full" title="Export Profile">
-          <ArrowDownTrayIcon className="w-3 h-3 inline-flex mr-1" />
+          <ArrowDownTrayIcon className={`w-3 h-3 inline-flex mr-1 ${LINE_CENTERED_ICON_CLASS}`} />
           <span className="text-sm">Export</span>
         </DefaultBackgroundButton>
         <DefaultBackgroundButton navigable onClick={() => fileInputRef.current?.click()} className="pl-2 pr-3 py-1 rounded-full" title="Import Profile">
-          <ArrowUpTrayIcon className="w-3 h-3 inline-flex mr-1" />
+          <ArrowUpTrayIcon className={`w-3 h-3 inline-flex mr-1 ${LINE_CENTERED_ICON_CLASS}`} />
           <span className="text-sm">Import</span>
         </DefaultBackgroundButton>
         <input ref={fileInputRef} type="file" accept=".json" onChange={handleImportProfile} className="hidden" />
