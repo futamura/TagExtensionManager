@@ -23,7 +23,7 @@ A Chrome Extension for efficiently managing Chrome extensions. Group multiple ex
 - Instant search by extension name and description
 - Tag management: create, rename, delete, and reorder
 - Lock extensions to exclude them from bulk enable/disable
-- Keyboard navigation: move with arrow keys, toggle with Space, and press ? to see all shortcuts
+- Keyboard navigation: move with arrow keys, toggle with Space, manage tags, lock, or uninstall with a single key, and press ? to see all shortcuts
 - Clean, modern design with dark and light modes
 
 ### Extension Management

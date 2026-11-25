@@ -37,6 +37,10 @@ const SHORTCUT_SECTIONS: ShortcutSection[] = [
       { label: 'Enable / disable', keys: ['Space'] },
       { label: 'Open options page', keys: ['Enter'] },
       { label: 'Open menu', keys: ['M'] },
+      { label: 'Manage tags', keys: ['T'] },
+      { label: 'Lock / unlock', keys: ['L'] },
+      { label: 'View details', keys: ['D'] },
+      { label: 'Uninstall', keys: ['Delete'] },
     ],
   },
   {

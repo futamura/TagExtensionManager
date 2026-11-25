@@ -9,6 +9,10 @@ interface CardKeyboardActions {
   onToggle: () => void | Promise<void>;
   onOpen: () => void | Promise<void>;
   onOpenMenu: () => void;
+  onManageTags: () => void;
+  onToggleLock: () => void;
+  onOpenDetails: () => void | Promise<void>;
+  onUninstall: () => void;
 }
 
 /**
@@ -19,7 +23,7 @@ const ARROW_KEYS: string[] = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
 /**
  * Non-arrow keys handled on a card.
  */
-const ACTION_KEYS: string[] = [' ', 'Enter', 'm', 'M', 'Escape'];
+const ACTION_KEYS: string[] = [' ', 'Enter', 'm', 'M', 't', 'T', 'l', 'L', 'd', 'D', 'Delete', 'Backspace', 'Escape'];
 
 /**
  * The hook that turns key presses on an extension card into navigation and actions.
@@ -29,7 +33,7 @@ const ACTION_KEYS: string[] = [' ', 'Enter', 'm', 'M', 'Escape'];
  * @param actions - The card actions.
  * @returns The keydown handler for the card root.
  */
-export const useCardKeyboardNavigation = ({ onToggle, onOpen, onOpenMenu }: CardKeyboardActions) => {
+export const useCardKeyboardNavigation = ({ onToggle, onOpen, onOpenMenu, onManageTags, onToggleLock, onOpenDetails, onUninstall }: CardKeyboardActions) => {
   return useCallback(
     (e: React.KeyboardEvent<HTMLElement>) => {
       /** Untrusted events are synthetic keys dispatched by the card itself (e.g. to open the menu) */
@@ -65,10 +69,26 @@ export const useCardKeyboardNavigation = ({ onToggle, onOpen, onOpenMenu }: Card
         case 'Escape':
           focusSearchInput();
           break;
+        case 't':
+        case 'T':
+          onManageTags();
+          break;
+        case 'l':
+        case 'L':
+          onToggleLock();
+          break;
+        case 'd':
+        case 'D':
+          void onOpenDetails();
+          break;
+        case 'Delete':
+        case 'Backspace':
+          onUninstall();
+          break;
         default:
           onOpenMenu();
       }
     },
-    [onToggle, onOpen, onOpenMenu]
+    [onToggle, onOpen, onOpenMenu, onManageTags, onToggleLock, onOpenDetails, onUninstall]
   );
 };

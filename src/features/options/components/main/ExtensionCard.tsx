@@ -3,11 +3,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Switch } from '@headlessui/react';
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 
+import { CancelButtonComponent, DeleteButtonComponent, DialogHeader, DialogRoot } from '@/components';
 import { FOCUS_RING_CLASS } from '@/constants';
 import { useExtensionContext } from '@/contexts';
 import { ExtensionCardMenu } from '@/features/options/components/main';
 import { useCardKeyboardNavigation } from '@/hooks';
 import { ExtensionModel } from '@/models';
+import { useExtensionStore } from '@/stores';
 import { focusSearchInput, getCards } from '@/utils';
 
 /**
@@ -24,6 +26,21 @@ const UntabbableButton = React.forwardRef<HTMLButtonElement, React.ComponentProp
   <button {...props} ref={ref} tabIndex={-1} />
 ));
 UntabbableButton.displayName = 'UntabbableButton';
+
+/**
+ * Focus the card now at the given position after a card was removed from the list,
+ * or the search field when no card is left.
+ *
+ * @param index - The position of the removed card.
+ */
+const focusCardAt = (index: number) => {
+  const cards = getCards();
+  if (cards.length === 0) {
+    focusSearchInput();
+    return;
+  }
+  cards[Math.min(Math.max(index, 0), cards.length - 1)].focus();
+};
 
 /**
  * Extension card props.
@@ -57,7 +74,15 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
   /**
    * The use extensions hook.
    */
-  const { toggleEnabled, openOptionsPage } = useExtensionContext();
+  const { toggleEnabled, openOptionsPage, openExtensionPage, openTagSelector, uninstallExtension } = useExtensionContext();
+  /**
+   * The toggle lock function.
+   */
+  const { toggleLock } = useExtensionStore();
+  /**
+   * The uninstall dialog open state.
+   */
+  const [isUninstallDialogOpen, setIsUninstallDialogOpen] = useState(false);
   /**
    * The button ref.
    */
@@ -66,6 +91,22 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
    * The card root ref.
    */
   const cardRef = useRef<HTMLDivElement>(null);
+  /**
+   * The card position to focus when this card unmounts after an uninstall.
+   */
+  const uninstallFocusIndexRef = useRef<number | null>(null);
+
+  /**
+   * Move focus to the card now at the same position when this card is removed by an uninstall.
+   */
+  useEffect(() => {
+    const focusIndexRef = uninstallFocusIndexRef;
+    return () => {
+      const index = focusIndexRef.current;
+      if (index === null) return;
+      requestAnimationFrame(() => focusCardAt(index));
+    };
+  }, []);
 
   /**
    * Check if extension has options page on mount.
@@ -127,14 +168,51 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
     requestAnimationFrame(() => {
       if (cardRef.current?.isConnected) return;
 
-      const cards = getCards();
-      if (cards.length === 0) {
-        focusSearchInput();
-        return;
-      }
-      cards[Math.min(Math.max(index, 0), cards.length - 1)].focus();
+      focusCardAt(index);
     });
   }, [extension.id, extension.enabled, extension.locked, toggleEnabled]);
+
+  /**
+   * Open the tag selector for this extension.
+   */
+  const handleManageTags = useCallback(() => {
+    openTagSelector(extension);
+  }, [extension, openTagSelector]);
+
+  /**
+   * Lock or unlock the extension.
+   */
+  const handleToggleLock = useCallback(() => {
+    toggleLock(extension.id, !extension.locked);
+  }, [extension.id, extension.locked, toggleLock]);
+
+  /**
+   * Open the extension details page of the browser.
+   */
+  const handleOpenDetails = useCallback(async () => {
+    await openExtensionPage(extension.id);
+  }, [extension.id, openExtensionPage]);
+
+  /**
+   * Open the uninstall confirmation dialog.
+   */
+  const handleUninstallClick = useCallback(() => {
+    setIsUninstallDialogOpen(true);
+  }, []);
+
+  /**
+   * Uninstall the extension after confirmation.
+   */
+  const handleConfirmUninstall = async () => {
+    uninstallFocusIndexRef.current = cardRef.current ? getCards().indexOf(cardRef.current) : -1;
+    try {
+      await uninstallExtension(extension.id);
+    } catch (error) {
+      uninstallFocusIndexRef.current = null;
+      throw error;
+    }
+    setIsUninstallDialogOpen(false);
+  };
 
   /**
    * Open the card menu from the keyboard.
@@ -167,6 +245,10 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
     onToggle: handleKeyboardToggle,
     onOpen: handleCardClick,
     onOpenMenu: handleKeyboardOpenMenu,
+    onManageTags: handleManageTags,
+    onToggleLock: handleToggleLock,
+    onOpenDetails: handleOpenDetails,
+    onUninstall: handleUninstallClick,
   });
 
   /**
@@ -219,8 +301,19 @@ export const ExtensionCard: React.FC<ExtensionCardProps> = ({ extension }) => {
             />
           </Switch>
           <div className="relative">
-            <ExtensionCardMenu extension={extension} buttonRef={buttonRef} />
+            <ExtensionCardMenu extension={extension} buttonRef={buttonRef} onUninstallClick={handleUninstallClick} />
           </div>
+          {/** Kept inside the controls so clicks in the dialog do not reach the card */}
+          <DialogRoot isOpen={isUninstallDialogOpen} onClose={() => setIsUninstallDialogOpen(false)} width="max-w-sm">
+            <div className="flex flex-col gap-4">
+              <DialogHeader title="Uninstall Extension" />
+              <div className="flex ">Are you sure to uninstall "{extension.name}"? This action cannot be undone.</div>
+              <div className="flex justify-end gap-2">
+                <CancelButtonComponent onClick={() => setIsUninstallDialogOpen(false)} />
+                <DeleteButtonComponent onClick={handleConfirmUninstall} />
+              </div>
+            </div>
+          </DialogRoot>
         </div>
       </div>
     </div>
